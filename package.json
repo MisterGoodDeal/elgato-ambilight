@@ -1,0 +1,47 @@
+{
+  "name": "electron-typescript-ipc-example",
+  "productName": "electron-typescript-ipc-example",
+  "version": "1.0.0",
+  "description": "My Electron application description",
+  "main": ".webpack/main",
+  "scripts": {
+    "start": "electron-forge start",
+    "package": "electron-forge package",
+    "make": "electron-forge make",
+    "publish": "electron-forge publish",
+    "lint": "eslint --ext .ts,.tsx ."
+  },
+  "keywords": [],
+  "author": {
+    "name": "JichouP",
+    "email": "akkunn100@gmail.com"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "@electron-forge/cli": "^6.0.0",
+    "@electron-forge/maker-deb": "^6.0.0",
+    "@electron-forge/maker-rpm": "^6.0.0",
+    "@electron-forge/maker-squirrel": "^6.0.0",
+    "@electron-forge/maker-zip": "^6.0.0",
+    "@electron-forge/plugin-webpack": "^6.0.0",
+    "@typescript-eslint/eslint-plugin": "^5.42.1",
+    "@typescript-eslint/parser": "^5.42.1",
+    "@vercel/webpack-asset-relocator-loader": "^1.7.3",
+    "css-loader": "^6.7.1",
+    "electron": "21.2.2",
+    "eslint": "^8.27.0",
+    "eslint-plugin-import": "^2.26.0",
+    "fork-ts-checker-webpack-plugin": "^7.2.13",
+    "node-loader": "^2.0.0",
+    "style-loader": "^3.3.1",
+    "ts-loader": "^9.4.1",
+    "ts-node": "^10.9.1",
+    "typescript": "~4.5.4"
+  },
+  "dependencies": {
+    "@zunderscore/elgato-light-control": "^1.1.2",
+    "electron-squirrel-startup": "^1.0.0",
+    "electron-typescript-ipc": "^2.0.1",
+    "fs": "^0.0.1-security"
+  }
+}
