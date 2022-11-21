@@ -140,7 +140,7 @@ ipcMain.on("set-light-temperature", (event, params: SetTemperature) => {
   console.log("set-light-temperature", params);
   const initialOptions = lights[params.index].options;
   initialOptions.lights[0].on = 1;
-  light.temperature({
+  light.temperature.change({
     lightController: keyLightController,
     index: params.index,
     temperature: params.temperature,
