@@ -97,9 +97,23 @@ const changeLightBrightness = (params: ChangeBrightness) => {
     });
 };
 
+const MAX_TEMPERATURE = {
+  kelvin: 7000,
+  hex: "#96cfeb",
+  rgba: "rgba(150, 207, 235, 255)",
+};
+
+const MIN_TEMPERATURE = {
+  kelvin: 2900,
+  hex: "#fdb166",
+  rgba: "rgba(253, 177, 102, 255)",
+};
+
 export const light = {
   image: getImagePathFromName,
   state: changeLightState,
   temperature: changeLightTemperature,
   brightness: changeLightBrightness,
+  MAX_TEMPERATURE,
+  MIN_TEMPERATURE,
 };
