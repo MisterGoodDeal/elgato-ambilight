@@ -19,3 +19,11 @@ body {
   align-items: center;
   flex-direction: column;
 }
+
+#lights {
+  width: 90%;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  flex-direction: row;
+}

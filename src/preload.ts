@@ -19,16 +19,21 @@ const onResolutionReceived = (callback: (params: Bounds) => void) => {
   });
 };
 
-const onNewKeyLight = (callback: (params: KeyLight) => void) => {
-  ipcRenderer.on("keylight-discovery", (event, params) => {
+const onNewKeyLight = (callback: (params: KeyLight[]) => void) => {
+  ipcRenderer.on("lights", (event, params) => {
     callback(params);
   });
+};
+
+const identifyLight = (index: number) => {
+  ipcRenderer.send("identify-light", index);
 };
 
 const indexBridge = {
   sendResolution,
   onResolutionReceived,
   onNewKeyLight,
+  identifyLight,
 };
 
 contextBridge.exposeInMainWorld("Bridge", indexBridge);
