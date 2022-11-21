@@ -16,25 +16,81 @@ const getImagePathFromName = (name: string) => {
   }
 };
 
-const changeLightState = (
-  lightController: ElgatoKeyLightController,
-  index: number,
-  state: number,
-  initialOptions: KeyLightOptions
-) => {
-  lightController
-    .updateLightOptions(lightController.keyLights[index], {
-      numberOfLights: initialOptions.numberOfLights,
+interface ChangeState {
+  lightController: ElgatoKeyLightController;
+  index: number;
+  state: number;
+  initialOptions: KeyLightOptions;
+}
+
+const changeLightState = (params: ChangeState) => {
+  params.lightController
+    .updateLightOptions(params.lightController.keyLights[params.index], {
+      numberOfLights: params.initialOptions.numberOfLights,
       lights: [
         {
-          on: state,
-          brightness: initialOptions.lights[0].brightness,
-          temperature: initialOptions.lights[0].temperature,
+          on: params.state,
+          brightness: params.initialOptions.lights[0].brightness,
+          temperature: params.initialOptions.lights[0].temperature,
         },
       ],
     })
     .then(() => {
-      console.log("Key Light has been updated!");
+      console.log("Key Light state has been updated!");
+    })
+    .catch((e) => {
+      console.error("Error: ", e);
+    });
+};
+
+interface ChangeTemperature {
+  lightController: ElgatoKeyLightController;
+  temperature: number;
+  index: number;
+  initialOptions: KeyLightOptions;
+}
+
+const changeLightTemperature = (params: ChangeTemperature) => {
+  params.lightController
+    .updateLightOptions(params.lightController.keyLights[params.index], {
+      numberOfLights: params.initialOptions.numberOfLights,
+      lights: [
+        {
+          on: params.initialOptions.lights[0].on,
+          brightness: params.initialOptions.lights[0].brightness,
+          temperature: params.temperature,
+        },
+      ],
+    })
+    .then(() => {
+      console.log("Key Light T° has been updated!");
+    })
+    .catch((e) => {
+      console.error("Error: ", e);
+    });
+};
+
+interface ChangeBrightness {
+  lightController: ElgatoKeyLightController;
+  brightness: number;
+  index: number;
+  initialOptions: KeyLightOptions;
+}
+
+const changeLightBrightness = (params: ChangeBrightness) => {
+  params.lightController
+    .updateLightOptions(params.lightController.keyLights[params.index], {
+      numberOfLights: params.initialOptions.numberOfLights,
+      lights: [
+        {
+          on: params.initialOptions.lights[0].on,
+          brightness: params.brightness,
+          temperature: params.initialOptions.lights[0].temperature,
+        },
+      ],
+    })
+    .then(() => {
+      console.log("Key Light brightness has been updated!");
     })
     .catch((e) => {
       console.error("Error: ", e);
@@ -44,4 +100,6 @@ const changeLightState = (
 export const light = {
   image: getImagePathFromName,
   state: changeLightState,
+  temperature: changeLightTemperature,
+  brightness: changeLightBrightness,
 };
