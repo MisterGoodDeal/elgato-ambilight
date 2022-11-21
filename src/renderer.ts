@@ -99,22 +99,18 @@ const generateCards = (params: KeyLight[]) => {
     ul.classList.add("list-group", "list-group-flush");
     const li1 = document.createElement("li");
     li1.classList.add("list-group-item");
-    li1.innerText = `Serial number: ${light.info.serialNumber}`;
+    li1.appendChild(brightnessLabel);
+    li1.appendChild(brightnessInput);
     const li2 = document.createElement("li");
     li2.classList.add("list-group-item");
-    li2.innerText = `IP: ${light.ip}`;
+    li2.appendChild(temperatureLabel);
+    li2.appendChild(temperatureInput);
 
     ul.appendChild(li1);
     ul.appendChild(li2);
 
     cardBody.appendChild(cardTitle);
     cardBody.appendChild(cardButton);
-    cardBody.appendChild(document.createElement("br"));
-    cardBody.appendChild(brightnessLabel);
-    cardBody.appendChild(brightnessInput);
-    cardBody.appendChild(document.createElement("br"));
-    cardBody.appendChild(temperatureLabel);
-    cardBody.appendChild(temperatureInput);
     card.appendChild(cardBody);
     card.appendChild(ul);
     lights.appendChild(card);
