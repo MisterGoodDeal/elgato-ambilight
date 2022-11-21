@@ -1,6 +1,7 @@
 // See the Electron documentation for details on how to use preload scripts:
 
 import { KeyLight } from "@zunderscore/elgato-light-control";
+import { SetBrigthness, SetTemperature } from "./interfaces/lights";
 import { Bounds } from "./interfaces/screen";
 
 // https://www.electronjs.org/docs/latest/tutorial/process-model#preload-scripts
@@ -29,11 +30,21 @@ const identifyLight = (index: number) => {
   ipcRenderer.send("identify-light", index);
 };
 
+const setLightBrightness = (params: SetBrigthness) => {
+  ipcRenderer.send("set-light-brightness", params);
+};
+
+const setLightTemperature = (params: SetTemperature) => {
+  ipcRenderer.send("set-light-temperature", params);
+};
+
 const indexBridge = {
   sendResolution,
   onResolutionReceived,
   onNewKeyLight,
   identifyLight,
+  setLightBrightness,
+  setLightTemperature,
 };
 
 contextBridge.exposeInMainWorld("Bridge", indexBridge);

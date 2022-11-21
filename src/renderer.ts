@@ -57,6 +57,44 @@ const generateCards = (params: KeyLight[]) => {
       window.Bridge.identifyLight(index);
     });
 
+    // Brightness controll
+    const brightnessLabel = document.createElement("label");
+    brightnessLabel.classList.add("form-label");
+    brightnessLabel.innerText = `Brigthness (${light.options.lights[0].brightness}%)`;
+
+    const brightnessInput = document.createElement("input");
+    brightnessInput.classList.add("form-range");
+    brightnessInput.type = "range";
+    brightnessInput.min = "0";
+    brightnessInput.max = "100";
+    brightnessInput.value = light.options.lights[0].brightness.toString();
+    brightnessInput.addEventListener("change", () => {
+      window.Bridge.setLightBrightness({
+        index,
+        brightness: parseInt(brightnessInput.value),
+      });
+      brightnessLabel.innerText = `Brigthness (${brightnessInput.value}%)`;
+    });
+
+    // Temperature controll
+    const temperatureLabel = document.createElement("label");
+    temperatureLabel.classList.add("form-label");
+    temperatureLabel.innerText = `Temperature (${light.options.lights[0].temperature})`;
+
+    const temperatureInput = document.createElement("input");
+    temperatureInput.classList.add("form-range");
+    temperatureInput.type = "range";
+    temperatureInput.min = "144";
+    temperatureInput.max = "343";
+    temperatureInput.value = light.options.lights[0].temperature.toString();
+    temperatureInput.addEventListener("change", () => {
+      window.Bridge.setLightTemperature({
+        index,
+        temperature: parseInt(temperatureInput.value),
+      });
+      temperatureLabel.innerText = `Temperature (${temperatureInput.value})`;
+    });
+
     const ul = document.createElement("ul");
     ul.classList.add("list-group", "list-group-flush");
     const li1 = document.createElement("li");
@@ -71,7 +109,14 @@ const generateCards = (params: KeyLight[]) => {
 
     cardBody.appendChild(cardTitle);
     cardBody.appendChild(cardButton);
+    cardBody.appendChild(document.createElement("br"));
+    cardBody.appendChild(brightnessLabel);
+    cardBody.appendChild(brightnessInput);
+    cardBody.appendChild(document.createElement("br"));
+    cardBody.appendChild(temperatureLabel);
+    cardBody.appendChild(temperatureInput);
     card.appendChild(cardBody);
+    card.appendChild(ul);
     lights.appendChild(card);
   });
 };

@@ -5,6 +5,7 @@ import {
 } from "@zunderscore/elgato-light-control";
 import { light } from "./helpers/lights.helpers";
 import { system } from "./helpers/system";
+import { SetBrigthness, SetTemperature } from "./interfaces/lights";
 const Store = require("electron-store");
 const store = new Store();
 
@@ -122,5 +123,30 @@ ipcMain.on("identify-light", async (event, index) => {
     await system.wait(500);
   }
 });
+
+ipcMain.on("set-light-brightness", (event, params: SetBrigthness) => {
+  console.log("set-light-brightness", params);
+  const initialOptions = lights[params.index].options;
+  initialOptions.lights[0].on = 1;
+  light.brightness({
+    lightController: keyLightController,
+    index: params.index,
+    brightness: params.brightness,
+    initialOptions,
+  });
+});
+
+ipcMain.on("set-light-temperature", (event, params: SetTemperature) => {
+  console.log("set-light-temperature", params);
+  const initialOptions = lights[params.index].options;
+  initialOptions.lights[0].on = 1;
+  light.temperature({
+    lightController: keyLightController,
+    index: params.index,
+    temperature: params.temperature,
+    initialOptions,
+  });
+});
+
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and import them here.
