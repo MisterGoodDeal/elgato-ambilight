@@ -106,9 +106,19 @@ ipcMain.on("identify-light", async (event, index) => {
   const initialState: number = l.options.lights[0].on ?? 0;
   console.log("initialState", initialState);
   for (let i = 0; i < 3; i++) {
-    light.state(keyLightController, index, 1, l.options);
+    light.state({
+      lightController: keyLightController,
+      index,
+      state: 1,
+      initialOptions: l.options,
+    });
     await system.wait(500);
-    light.state(keyLightController, index, 0, l.options);
+    light.state({
+      lightController: keyLightController,
+      index,
+      state: 0,
+      initialOptions: l.options,
+    });
     await system.wait(500);
   }
 });
