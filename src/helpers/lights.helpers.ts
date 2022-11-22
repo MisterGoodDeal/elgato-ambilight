@@ -121,16 +121,16 @@ const calculateTemperatureFromValueToKelvin = (value: number) => {
   const rangeValue = coldValue - hotValue;
   const valuePercentage = Math.round(((value - hotValue) / rangeValue) * 100);
   const kelvin = Math.round(coldTemp - range * (valuePercentage / 100));
-  console.log(
-    "rangeValue",
-    rangeValue,
-    "range",
-    `${range}K`,
-    "valuePercentage",
-    valuePercentage,
-    "kelvin",
-    `${kelvin}K`
-  );
+  // console.log(
+  //   "rangeValue",
+  //   rangeValue,
+  //   "range",
+  //   `${range}K`,
+  //   "valuePercentage",
+  //   valuePercentage,
+  //   "kelvin",
+  //   `${kelvin}K`
+  // );
   return { text: `${kelvin}K`, value: kelvin };
 };
 
