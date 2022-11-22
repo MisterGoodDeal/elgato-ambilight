@@ -13,6 +13,7 @@
           class="form-control"
           placeholder="Screen width"
           id="screen-width"
+          disabled
         />
         <span class="input-group-text" id="basic-addon1">px</span>
       </div>
@@ -22,11 +23,16 @@
           class="form-control"
           placeholder="Screen height"
           id="screen-height"
+          disabled
         />
         <span class="input-group-text" id="basic-addon1">px</span>
       </div>
     </div>
-    <div id="lights"></div>
+    <div id="lights">
+      <p>No lights found</p>
+    </div>
+    <br />
+    <canvas id="screen-canvas"></canvas>
     <button id="send-btn" type="button" class="btn btn-primary">Send</button>
   </body>
 </html>

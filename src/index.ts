@@ -27,8 +27,8 @@ const lights: KeyLight[] = JSON.parse(store.get("lights") || "[]");
 const createWindow = (): void => {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
-    height: 800,
-    width: 1200,
+    height: system.WINDOW_HEIGHT,
+    width: system.WINDOW_WIDTH,
     webPreferences: {
       /**
        * @see {@link https://github.com/electron/forge/issues/2931}
