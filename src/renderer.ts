@@ -18,11 +18,15 @@ btnSend.addEventListener("click", () => {
   window.Bridge.sendResolution({ width, height });
 });
 
+// @ts-ignore
 window.Bridge.onResolutionReceived((params: Bounds) => {
+  // @ts-ignore
   document.querySelector("#screen-width").value = params.bounds.width;
+  // @ts-ignore
   document.querySelector("#screen-height").value = params.bounds.height;
 });
 
+// @ts-ignore
 window.Bridge.onNewKeyLight((params: KeyLight[]) => {
   console.log("onNewKeyLight", params);
   generateCards(params);
@@ -54,10 +58,11 @@ const generateCards = (params: KeyLight[]) => {
     cardButton.innerText = "Identify light";
     cardButton.addEventListener("click", () => {
       console.log("Identify light at index ", index);
+      // @ts-ignore
       window.Bridge.identifyLight(index);
     });
 
-    // Brightness controll
+    // Brightness control
     const brightnessLabel = document.createElement("label");
     brightnessLabel.classList.add("form-label");
     brightnessLabel.innerText = `Brigthness (${light.options.lights[0].brightness}%)`;
@@ -69,6 +74,7 @@ const generateCards = (params: KeyLight[]) => {
     brightnessInput.max = "100";
     brightnessInput.value = light.options.lights[0].brightness.toString();
     brightnessInput.addEventListener("change", () => {
+      // @ts-ignore
       window.Bridge.setLightBrightness({
         index,
         brightness: parseInt(brightnessInput.value),
@@ -76,10 +82,18 @@ const generateCards = (params: KeyLight[]) => {
       brightnessLabel.innerText = `Brigthness (${brightnessInput.value}%)`;
     });
 
-    // Temperature controll
+    // Temperature control
     const temperatureLabel = document.createElement("label");
     temperatureLabel.classList.add("form-label");
-    temperatureLabel.innerText = `Temperature (${light.options.lights[0].temperature})`;
+    temperatureLabel.innerText = `Temperature (${
+      light_helper.temperature.calculateKelvin(
+        Number(light.options.lights[0].temperature)
+      ).text
+    })`;
+    temperatureLabel.style.backgroundColor =
+      light_helper.temperature.calculateColor(
+        Number(light.options.lights[0].temperature)
+      );
 
     const temperatureInput = document.createElement("input");
     temperatureInput.classList.add("form-range");
@@ -88,11 +102,17 @@ const generateCards = (params: KeyLight[]) => {
     temperatureInput.max = "343";
     temperatureInput.value = light.options.lights[0].temperature.toString();
     temperatureInput.addEventListener("change", () => {
+      // @ts-ignore
       window.Bridge.setLightTemperature({
         index,
         temperature: parseInt(temperatureInput.value),
       });
-      temperatureLabel.innerText = `Temperature (${temperatureInput.value})`;
+      temperatureLabel.innerText = `Temperature (${
+        light_helper.temperature.calculateKelvin(Number(temperatureInput.value))
+          .text
+      })`;
+      temperatureLabel.style.backgroundColor =
+        light_helper.temperature.calculateColor(Number(temperatureInput.value));
     });
 
     const ul = document.createElement("ul");

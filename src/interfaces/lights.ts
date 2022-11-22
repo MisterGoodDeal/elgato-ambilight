@@ -6,3 +6,8 @@ export interface SetTemperature {
   temperature: number;
   index: number;
 }
+
+export interface CalculateKelvinReturn {
+  value: number;
+  text: string;
+}

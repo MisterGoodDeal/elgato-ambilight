@@ -27,8 +27,8 @@ const lights: KeyLight[] = JSON.parse(store.get("lights") || "[]");
 const createWindow = (): void => {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
-    height: 600,
-    width: 800,
+    height: 800,
+    width: 1200,
     webPreferences: {
       /**
        * @see {@link https://github.com/electron/forge/issues/2931}
@@ -125,7 +125,6 @@ ipcMain.on("identify-light", async (event, index) => {
 });
 
 ipcMain.on("set-light-brightness", (event, params: SetBrigthness) => {
-  console.log("set-light-brightness", params);
   const initialOptions = lights[params.index].options;
   initialOptions.lights[0].on = 1;
   light.brightness({
@@ -137,7 +136,6 @@ ipcMain.on("set-light-brightness", (event, params: SetBrigthness) => {
 });
 
 ipcMain.on("set-light-temperature", (event, params: SetTemperature) => {
-  console.log("set-light-temperature", params);
   const initialOptions = lights[params.index].options;
   initialOptions.lights[0].on = 1;
   light.temperature.change({
