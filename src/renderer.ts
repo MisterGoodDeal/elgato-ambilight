@@ -5,8 +5,22 @@ import { Bounds } from "./interfaces/screen";
 import { KeyLight } from "@zunderscore/elgato-light-control";
 import { light as light_helper } from "./helpers/lights.helpers";
 import { system } from "./helpers/system";
+import { AppSettings, LightSettings } from "./interfaces/app";
 
 console.log("👋 Hello from renderer!");
+
+const bounds = {
+  width: 0,
+  height: 0,
+  x: 0,
+  y: 0,
+};
+
+const IMAGE_SIZE = 50;
+
+let appSettings: AppSettings;
+
+let keylights: KeyLight[] = [];
 
 const btnSend = document.querySelector("#send-btn");
 btnSend.addEventListener("click", () => {
@@ -20,48 +34,75 @@ btnSend.addEventListener("click", () => {
 });
 
 // @ts-ignore
-window.Bridge.onResolutionReceived((params: Bounds) => {
-  // @ts-ignore
-  document.querySelector("#screen-width").value = params.bounds.width;
-  // @ts-ignore
-  document.querySelector("#screen-height").value = params.bounds.height;
+window.Bridge.onSettingsReceived((params: AppSettings) => {
+  console.log("onSettingsReceived", params);
+  appSettings = params;
+  bounds.width = params.bounds.width;
+  bounds.height = params.bounds.height;
+  bounds.x = params.bounds.x;
+  bounds.y = params.bounds.y;
   // Calculate aspect ratio of the screen
-  const aspectRatio = params.bounds.height / params.bounds.width;
-  console.log({ aspectRatio, params });
-
+  const aspectRatio = bounds.height / bounds.width;
   // Draw rectangle in canvas
   const canvas = document.querySelector("#screen-canvas");
+  // @ts-ignore
   canvas.width = system.WINDOW_WIDTH * 0.5;
+  // @ts-ignore
   canvas.height = system.WINDOW_WIDTH * 0.5 * aspectRatio;
+  // @ts-ignore
   const ctx = canvas.getContext("2d");
+  // @ts-ignore
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  ctx.fillStyle = "rgba(255, 0, 0, 0.5)";
-  ctx.fillRect(
-    0,
-    0,
-    system.WINDOW_WIDTH * 0.5,
-    system.WINDOW_WIDTH * 0.5 * aspectRatio
-  );
 });
 
 // @ts-ignore
 window.Bridge.onNewKeyLight((params: KeyLight[]) => {
-  console.log("onNewKeyLight", params);
+  keylights = params;
   generateCards(params);
 });
 
 const generateCards = (params: KeyLight[]) => {
   const lights = document.querySelector("#lights");
+  const canvasContainer = document.querySelector("#canvas-container");
+  const canvasScreen = document.querySelector("#screen-canvas");
   lights.innerHTML = "";
   params.forEach((light, index) => {
+    const imageHelper = light_helper.image(light.info.productName);
+    const lightSettings = light_helper.settings({
+      lightSettings: appSettings.lights ?? [],
+      serialNumber: light.info.serialNumber,
+    });
+
+    // Get the position of #screen-canvas in the dom
+    const canvasRect = canvasContainer.getBoundingClientRect();
+    const img = new Image();
+    img.src = imageHelper.icon;
+    img.onload = () => {
+      // @ts-ignore
+      const widthMultiplier = canvasScreen.width / bounds.width;
+      // @ts-ignore
+      const heightMultiplier = canvasScreen.height / bounds.height;
+      // @ts-ignore
+      const ctx = canvasScreen.getContext("2d");
+      ctx.drawImage(
+        img,
+        lightSettings.x * widthMultiplier - IMAGE_SIZE / 2,
+        lightSettings.y * heightMultiplier - IMAGE_SIZE / 2,
+        IMAGE_SIZE,
+        IMAGE_SIZE
+      );
+    };
+
+    const col6 = document.createElement("div");
+    col6.classList.add("col-6");
     // Create card
     const card = document.createElement("div");
     card.classList.add("card");
-    card.style.width = "18rem";
+    card.classList.add("fluid");
 
     const image = document.createElement("img");
     image.classList.add("card-img-top");
-    image.src = light_helper.image(light.info.productName);
+    image.src = imageHelper.product;
     image.alt = light.info.serialNumber;
     card.appendChild(image);
 
@@ -78,7 +119,7 @@ const generateCards = (params: KeyLight[]) => {
     cardButton.addEventListener("click", () => {
       console.log("Identify light at index ", index);
       // @ts-ignore
-      window.Bridge.identifyLight(index);
+      window.Bridge.identifyLight(light.info.serialNumber);
     });
 
     // Brightness control
@@ -95,7 +136,7 @@ const generateCards = (params: KeyLight[]) => {
     brightnessInput.addEventListener("change", () => {
       // @ts-ignore
       window.Bridge.setLightBrightness({
-        index,
+        serialNumber: light.info.serialNumber,
         brightness: parseInt(brightnessInput.value),
       });
       brightnessLabel.innerText = `Brigthness (${brightnessInput.value}%)`;
@@ -106,24 +147,31 @@ const generateCards = (params: KeyLight[]) => {
     temperatureLabel.classList.add("form-label");
     temperatureLabel.innerText = `Temperature (${
       light_helper.temperature.calculateKelvin(
-        Number(light.options.lights[0].temperature)
+        light_helper.temperatureValueIndex(light.options.lights[0].temperature)
       ).text
     })`;
+    temperatureLabel.style.paddingLeft = "10px";
+    temperatureLabel.style.paddingRight = "10px";
+    temperatureLabel.style.paddingTop = "3px";
+    temperatureLabel.style.paddingBottom = "3px";
+    temperatureLabel.style.borderRadius = "3px";
     temperatureLabel.style.backgroundColor =
       light_helper.temperature.calculateColor(
-        Number(light.options.lights[0].temperature)
+        light_helper.temperatureValueIndex(light.options.lights[0].temperature)
       );
 
     const temperatureInput = document.createElement("input");
     temperatureInput.classList.add("form-range");
     temperatureInput.type = "range";
-    temperatureInput.min = "144";
-    temperatureInput.max = "343";
-    temperatureInput.value = light.options.lights[0].temperature.toString();
+    temperatureInput.min = "0";
+    temperatureInput.max = `${light_helper.TEMPERATURE_VALUES.length - 1}`;
+    temperatureInput.value = light_helper
+      .temperatureValueIndex(light.options.lights[0].temperature)
+      .toString();
     temperatureInput.addEventListener("change", () => {
       // @ts-ignore
       window.Bridge.setLightTemperature({
-        index,
+        serialNumber: light.info.serialNumber,
         temperature: parseInt(temperatureInput.value),
       });
       temperatureLabel.innerText = `Temperature (${
@@ -132,6 +180,58 @@ const generateCards = (params: KeyLight[]) => {
       })`;
       temperatureLabel.style.backgroundColor =
         light_helper.temperature.calculateColor(Number(temperatureInput.value));
+    });
+
+    // Position x control
+    const positionXLabel = document.createElement("label");
+    positionXLabel.classList.add("form-label");
+    positionXLabel.innerText = `Position X on screen: (${lightSettings.x})`;
+
+    const positionXInput = document.createElement("input");
+    positionXInput.classList.add("form-range");
+    positionXInput.type = "range";
+    positionXInput.min = "0";
+    positionXInput.max = `${bounds.width - 1}`;
+    positionXInput.value = lightSettings.x.toString();
+    positionXInput.addEventListener("change", () => {
+      // @ts-ignore
+      window.Bridge.setLightPosition({
+        serialNumber: light.info.serialNumber,
+        x: parseInt(positionXInput.value),
+      });
+      positionXLabel.innerText = `Position X on screen: (${positionXInput.value})`;
+      // Change the setting of the current light
+      const index = appSettings.lights.findIndex(
+        (lightSetting) => lightSetting.serialNumber === light.info.serialNumber
+      );
+      appSettings.lights[index].x = parseInt(positionXInput.value);
+      redrawImages(canvasScreen, canvasContainer);
+    });
+
+    // Position y control
+    const positionYLabel = document.createElement("label");
+    positionYLabel.classList.add("form-label");
+    positionYLabel.innerText = `Position Y on screen: (${lightSettings.y})`;
+
+    const positionYInput = document.createElement("input");
+    positionYInput.classList.add("form-range");
+    positionYInput.type = "range";
+    positionYInput.min = "0";
+    positionYInput.max = `${bounds.height - 1}`;
+    positionYInput.value = lightSettings.y.toString();
+    positionYInput.addEventListener("change", () => {
+      // @ts-ignore
+      window.Bridge.setLightPosition({
+        serialNumber: light.info.serialNumber,
+        y: parseInt(positionYInput.value),
+      });
+      positionYLabel.innerText = `Position Y on screen: (${positionYInput.value})`;
+      // Change the setting of the current light
+      const index = appSettings.lights.findIndex(
+        (lightSetting) => lightSetting.serialNumber === light.info.serialNumber
+      );
+      appSettings.lights[index].y = parseInt(positionYInput.value);
+      redrawImages(canvasScreen, canvasContainer);
     });
 
     const ul = document.createElement("ul");
@@ -144,82 +244,55 @@ const generateCards = (params: KeyLight[]) => {
     li2.classList.add("list-group-item");
     li2.appendChild(temperatureLabel);
     li2.appendChild(temperatureInput);
+    const li3 = document.createElement("li");
+    li3.classList.add("list-group-item");
+    li3.appendChild(positionXLabel);
+    li3.appendChild(positionXInput);
+    li3.appendChild(positionYLabel);
+    li3.appendChild(positionYInput);
 
     ul.appendChild(li1);
     ul.appendChild(li2);
+    ul.appendChild(li3);
 
     cardBody.appendChild(cardTitle);
     cardBody.appendChild(cardButton);
     card.appendChild(cardBody);
     card.appendChild(ul);
-    lights.appendChild(card);
-
-    // Dragable square in the canvas
-    const canvas = document.querySelector("#screen-canvas");
-    const ctx = canvas.getContext("2d");
-    const square = new Square(ctx, {
-      x: index * 100,
-      y: 0,
-      width: 30,
-      height: 30,
-      color: "rgba(0, 0, 255, 0.5)",
-    });
-    square.draw();
-    canvas.addEventListener("mousedown", (e) => {
-      square.isDragging = true;
-      square.offsetX = e.offsetX;
-      square.offsetY = e.offsetY;
-    });
-    canvas.addEventListener("mouseup", (e) => {
-      square.isDragging = false;
-    });
-    canvas.addEventListener("mousemove", (e) => {
-      if (square.isDragging) {
-        square.x = e.offsetX - square.offsetX;
-        square.y = e.offsetY - square.offsetY;
-        square.draw();
-      }
-    });
+    col6.appendChild(card);
+    lights.appendChild(col6);
   });
 };
 
-class Square {
-  ctx: CanvasRenderingContext2D;
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-  color: string;
-  isDragging: boolean;
-  offsetX: number;
-  offsetY: number;
+const redrawImages = (lightsCanvas: Element, mainCanvas: Element) => {
+  // @ts-ignore
+  const ctx = lightsCanvas.getContext("2d");
+  // @ts-ignore
+  ctx.clearRect(0, 0, lightsCanvas.width, lightsCanvas.height);
+  keylights.forEach((kl) => {
+    const imageHelper = light_helper.image(kl.info.productName);
+    const lightSettings = light_helper.settings({
+      lightSettings: appSettings.lights ?? [],
+      serialNumber: kl.info.serialNumber,
+    });
 
-  constructor(
-    ctx: CanvasRenderingContext2D,
-    { x, y, width, height, color }: SquareProps
-  ) {
-    this.ctx = ctx;
-    this.x = x;
-    this.y = y;
-    this.width = width;
-    this.height = height;
-    this.color = color;
-    this.isDragging = false;
-    this.offsetX = 0;
-    this.offsetY = 0;
-  }
-
-  draw() {
-    this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
-    this.ctx.fillStyle = this.color;
-    this.ctx.fillRect(this.x, this.y, this.width, this.height);
-  }
-}
-
-interface SquareProps {
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-  color: string;
-}
+    const canvasRect = mainCanvas.getBoundingClientRect();
+    const img = new Image();
+    img.src = imageHelper.icon;
+    img.onload = () => {
+      // @ts-ignore
+      const widthMultiplier = canvasRect.width / bounds.width;
+      // @ts-ignore
+      const heightMultiplier = canvasRect.height / bounds.height;
+      // @ts-ignore
+      const ctx = lightsCanvas.getContext("2d");
+      ctx.drawImage(
+        img,
+        lightSettings.x * widthMultiplier - IMAGE_SIZE / 2,
+        lightSettings.y * heightMultiplier - IMAGE_SIZE / 2,
+        IMAGE_SIZE,
+        IMAGE_SIZE
+      );
+    };
+  });
+};

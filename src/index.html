@@ -6,33 +6,13 @@
   </head>
   <body>
     <h1>💡Elgato Ambilight</h1>
-    <div id="screen-size">
-      <div class="input-group mb-3">
-        <input
-          type="text"
-          class="form-control"
-          placeholder="Screen width"
-          id="screen-width"
-          disabled
-        />
-        <span class="input-group-text" id="basic-addon1">px</span>
+    <div class="container text-center">
+      <div class="row" id="lights">
+        <p style="text-align: center">No lights found</p>
       </div>
-      <div class="input-group mb-3">
-        <input
-          type="text"
-          class="form-control"
-          placeholder="Screen height"
-          id="screen-height"
-          disabled
-        />
-        <span class="input-group-text" id="basic-addon1">px</span>
-      </div>
-    </div>
-    <div id="lights">
-      <p>No lights found</p>
     </div>
     <br />
-    <canvas id="screen-canvas"></canvas>
+    <div id="canvas-container"><canvas id="screen-canvas"></canvas></div>
     <button id="send-btn" type="button" class="btn btn-primary">Send</button>
   </body>
 </html>

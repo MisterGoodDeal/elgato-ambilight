@@ -6,6 +6,13 @@ import {
 import { light } from "./helpers/lights.helpers";
 import { system } from "./helpers/system";
 import { SetBrigthness, SetTemperature } from "./interfaces/lights";
+import {
+  AppSettings,
+  defaultAppSettings,
+  LightPosition,
+  LightSettings,
+} from "./interfaces/app";
+import * as robotjs from "robotjs";
 const Store = require("electron-store");
 const store = new Store();
 
@@ -23,6 +30,9 @@ if (require("electron-squirrel-startup")) {
 }
 
 const lights: KeyLight[] = JSON.parse(store.get("lights") || "[]");
+const appSettings: AppSettings = JSON.parse(
+  store.get("settings") || JSON.stringify(defaultAppSettings)
+);
 
 const createWindow = (): void => {
   // Create the browser window.
@@ -49,11 +59,14 @@ const createWindow = (): void => {
   mainWindow.webContents.once("dom-ready", () => {
     // Get primary screen resolution
     const bounds = screen.getPrimaryDisplay().bounds;
-    mainWindow.webContents.send("set-screen-resolution", { bounds });
+    appSettings.bounds = bounds;
+    store.set("settings", JSON.stringify(appSettings));
+    mainWindow.webContents.send("set-settings", appSettings);
     mainWindow.webContents.send("lights", lights);
   });
 
   keyLightController.on("newKeyLight", (newKeyLight: KeyLight) => {
+    console.log(newKeyLight.options.lights[0].temperature);
     if (
       !lights.find((l) => l.info.serialNumber === newKeyLight.info.serialNumber)
     ) {
@@ -101,11 +114,11 @@ ipcMain.on("send-resolution", (event, params) => {
   console.log("send-resolution", params);
 });
 
-ipcMain.on("identify-light", async (event, index) => {
+ipcMain.on("identify-light", async (event, serialNumber) => {
+  const index = lights.findIndex((l) => l.info.serialNumber === serialNumber);
   console.log("identify-light", index);
   const l = lights[index];
   const initialState: number = l.options.lights[0].on ?? 0;
-  console.log("initialState", initialState);
   for (let i = 0; i < 3; i++) {
     light.state({
       lightController: keyLightController,
@@ -122,28 +135,80 @@ ipcMain.on("identify-light", async (event, index) => {
     });
     await system.wait(500);
   }
+  light.state({
+    lightController: keyLightController,
+    index,
+    state: initialState,
+    initialOptions: l.options,
+  });
 });
 
 ipcMain.on("set-light-brightness", (event, params: SetBrigthness) => {
-  const initialOptions = lights[params.index].options;
+  // get the light index from serialNumber
+  const index = lights.findIndex(
+    (l) => l.info.serialNumber === params.serialNumber
+  );
+  const initialOptions = lights[index].options;
   initialOptions.lights[0].on = 1;
   light.brightness({
     lightController: keyLightController,
-    index: params.index,
+    index: index,
     brightness: params.brightness,
     initialOptions,
   });
 });
 
 ipcMain.on("set-light-temperature", (event, params: SetTemperature) => {
-  const initialOptions = lights[params.index].options;
+  const index = lights.findIndex(
+    (l) => l.info.serialNumber === params.serialNumber
+  );
+  const initialOptions = lights[index].options;
   initialOptions.lights[0].on = 1;
   light.temperature.change({
     lightController: keyLightController,
-    index: params.index,
+    index: index,
     temperature: params.temperature,
     initialOptions,
   });
+});
+
+ipcMain.on("set-light-position", (event, params: LightPosition) => {
+  var hex;
+  // get the index of the light in the light settings array
+  if (appSettings.lights === undefined) {
+    const lightSettings: LightSettings = {
+      serialNumber: params.serialNumber,
+      x: params.x ?? 0,
+      y: params.y ?? 0,
+    };
+    hex = robotjs.getPixelColor(0, 0);
+    appSettings.lights = [lightSettings];
+  } else {
+    const index = appSettings.lights.findIndex(
+      (l) => l.serialNumber === params.serialNumber
+    );
+    if (index === -1) {
+      const lightSettings: LightSettings = {
+        serialNumber: params.serialNumber,
+        x: params.x ?? 0,
+        y: params.y ?? 0,
+      };
+      hex = robotjs.getPixelColor(params.x ?? 0, params.y ?? 0);
+
+      appSettings.lights.push(lightSettings);
+    } else {
+      if (params.x !== undefined) {
+        appSettings.lights[index].x = params.x;
+        hex = robotjs.getPixelColor(params.x, appSettings.lights[index].y);
+      }
+      if (params.y !== undefined) {
+        appSettings.lights[index].y = params.y;
+        hex = robotjs.getPixelColor(appSettings.lights[index].x, params.y);
+      }
+    }
+  }
+  console.log("set-light-position", { params, hex });
+  store.set("settings", JSON.stringify(appSettings));
 });
 
 // In this file you can include the rest of your app's specific main process

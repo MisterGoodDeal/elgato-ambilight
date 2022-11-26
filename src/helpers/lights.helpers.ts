@@ -1,9 +1,12 @@
 import keylight from "../assets/img/keylight.png";
 import keylightAir from "../assets/img/keylight-air.png";
+import keylightIcon from "../assets/img/keylight_icon.png";
+import keylightAirIcon from "../assets/img/keylight_air_icon.png";
 import {
   ElgatoKeyLightController,
   KeyLightOptions,
 } from "@zunderscore/elgato-light-control";
+import { LightSettings } from "../interfaces/app";
 
 const MAX_TEMPERATURE = {
   kelvin: 7000,
@@ -19,14 +22,76 @@ const MIN_TEMPERATURE = {
   value: 143,
 };
 
+// Temp between 7000k and 2900k
+const TEMPERATURE_VALUES = [
+  { value: 143, temp: 7000 },
+  { value: 146, temp: 6850 },
+  { value: 149, temp: 6700 },
+  { value: 152, temp: 6600 },
+  { value: 155, temp: 6450 },
+  { value: 158, temp: 6350 },
+  { value: 161, temp: 6200 },
+  { value: 164, temp: 6100 },
+  { value: 167, temp: 5900 },
+  { value: 170, temp: 5800 },
+  { value: 173, temp: 5700 },
+  { value: 176, temp: 5600 },
+  { value: 179, temp: 5500 },
+  { value: 182, temp: 5450 },
+  { value: 185, temp: 5350 },
+  { value: 188, temp: 5250 },
+  { value: 191, temp: 5200 },
+  { value: 194, temp: 5100 },
+  { value: 197, temp: 5050 },
+  { value: 200, temp: 4950 },
+  { value: 205, temp: 4900 },
+  { value: 208, temp: 4800 },
+  { value: 211, temp: 4750 },
+  { value: 214, temp: 4650 },
+  { value: 217, temp: 4600 },
+  { value: 220, temp: 4550 },
+  { value: 222, temp: 4500 },
+  { value: 225, temp: 4450 },
+  { value: 228, temp: 4400 },
+  { value: 231, temp: 4350 },
+  { value: 234, temp: 4250 },
+  { value: 237, temp: 4200 },
+  { value: 240, temp: 4150 },
+  { value: 243, temp: 4100 },
+  { value: 247, temp: 4050 },
+  { value: 251, temp: 4000 },
+  { value: 254, temp: 3950 },
+  { value: 257, temp: 3900 },
+  { value: 260, temp: 3850 },
+  { value: 264, temp: 3800 },
+  { value: 267, temp: 3750 },
+  { value: 272, temp: 3700 },
+  { value: 275, temp: 3650 },
+  { value: 279, temp: 3600 },
+  { value: 282, temp: 3550 },
+  { value: 286, temp: 3500 },
+  { value: 290, temp: 3450 },
+  { value: 296, temp: 3400 },
+  { value: 299, temp: 3350 },
+  { value: 305, temp: 3300 },
+  { value: 309, temp: 3250 },
+  { value: 313, temp: 3200 },
+  { value: 317, temp: 3150 },
+  { value: 322, temp: 3100 },
+  { value: 326, temp: 3050 },
+  { value: 322, temp: 3000 },
+  { value: 338, temp: 2950 },
+  { value: 344, temp: 2900 },
+];
+
 const getImagePathFromName = (name: string) => {
   switch (name) {
     case "Elgato Key Light Air":
-      return keylightAir;
+      return { product: keylightAir, icon: keylightAirIcon };
     case "Elgato Key Light":
-      return keylight;
+      return { product: keylight, icon: keylightIcon };
     default:
-      return keylight;
+      return { product: keylight, icon: keylightIcon };
   }
 };
 
@@ -72,7 +137,7 @@ const changeLightTemperature = (params: ChangeTemperature) => {
         {
           on: params.initialOptions.lights[0].on,
           brightness: params.initialOptions.lights[0].brightness,
-          temperature: params.temperature,
+          temperature: TEMPERATURE_VALUES[params.temperature].value,
         },
       ],
     })
@@ -111,27 +176,17 @@ const changeLightBrightness = (params: ChangeBrightness) => {
     });
 };
 
-// Calculate the kelvin value from the slider value
 const calculateTemperatureFromValueToKelvin = (value: number) => {
-  const coldTemp = MAX_TEMPERATURE.kelvin;
-  const hotTemp = MIN_TEMPERATURE.kelvin;
-  const coldValue = MAX_TEMPERATURE.value;
-  const hotValue = MIN_TEMPERATURE.value;
-  const range = coldTemp - hotTemp;
-  const rangeValue = coldValue - hotValue;
-  const valuePercentage = Math.round(((value - hotValue) / rangeValue) * 100);
-  const kelvin = Math.round(coldTemp - range * (valuePercentage / 100));
-  // console.log(
-  //   "rangeValue",
-  //   rangeValue,
-  //   "range",
-  //   `${range}K`,
-  //   "valuePercentage",
-  //   valuePercentage,
-  //   "kelvin",
-  //   `${kelvin}K`
-  // );
-  return { text: `${kelvin}K`, value: kelvin };
+  return {
+    text: `${TEMPERATURE_VALUES[value]?.temp ?? 0}K`,
+    value: TEMPERATURE_VALUES[value]?.temp ?? 0,
+  };
+};
+
+// Get the index of the temperature value from the nearest value
+const getTemperatureValueIndex = (value: number) => {
+  const index = TEMPERATURE_VALUES.findIndex((item) => item.value === value);
+  return index;
 };
 
 // Convert kelvin to RGB
@@ -181,6 +236,18 @@ const calculateTemperatureFromKelvinToRGB = (kelvin: number) => {
   return rgb;
 };
 
+const returnLightSettings = (params: {
+  lightSettings: LightSettings[];
+  serialNumber: string;
+}): LightSettings => {
+  const lightSettings = params.lightSettings.find(
+    (item) => item.serialNumber === params.serialNumber
+  );
+  return lightSettings === undefined
+    ? { x: 0, y: 0, serialNumber: params.serialNumber }
+    : lightSettings;
+};
+
 export const light = {
   image: getImagePathFromName,
   state: changeLightState,
@@ -193,6 +260,9 @@ export const light = {
       ),
   },
   brightness: changeLightBrightness,
+  temperatureValueIndex: getTemperatureValueIndex,
+  settings: returnLightSettings,
   MAX_TEMPERATURE,
   MIN_TEMPERATURE,
+  TEMPERATURE_VALUES,
 };

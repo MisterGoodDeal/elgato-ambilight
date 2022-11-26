@@ -1,6 +1,7 @@
 // See the Electron documentation for details on how to use preload scripts:
 
 import { KeyLight } from "@zunderscore/elgato-light-control";
+import { LightPosition } from "./interfaces/app";
 import { SetBrigthness, SetTemperature } from "./interfaces/lights";
 import { Bounds } from "./interfaces/screen";
 
@@ -14,8 +15,8 @@ const sendResolution = (params: { width: number; height: number }) => {
   ipcRenderer.send("send-resolution", params);
 };
 
-const onResolutionReceived = (callback: (params: Bounds) => void) => {
-  ipcRenderer.on("set-screen-resolution", (event, params) => {
+const onSettingsReceived = (callback: (params: Bounds) => void) => {
+  ipcRenderer.on("set-settings", (event, params) => {
     callback(params);
   });
 };
@@ -26,8 +27,8 @@ const onNewKeyLight = (callback: (params: KeyLight[]) => void) => {
   });
 };
 
-const identifyLight = (index: number) => {
-  ipcRenderer.send("identify-light", index);
+const identifyLight = (serialNumber: string) => {
+  ipcRenderer.send("identify-light", serialNumber);
 };
 
 const setLightBrightness = (params: SetBrigthness) => {
@@ -38,13 +39,18 @@ const setLightTemperature = (params: SetTemperature) => {
   ipcRenderer.send("set-light-temperature", params);
 };
 
+const setLightPosition = (params: LightPosition) => {
+  ipcRenderer.send("set-light-position", params);
+};
+
 const indexBridge = {
   sendResolution,
-  onResolutionReceived,
+  onSettingsReceived,
   onNewKeyLight,
   identifyLight,
   setLightBrightness,
   setLightTemperature,
+  setLightPosition,
 };
 
 contextBridge.exposeInMainWorld("Bridge", indexBridge);

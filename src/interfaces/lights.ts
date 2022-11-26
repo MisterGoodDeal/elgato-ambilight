@@ -1,10 +1,10 @@
 export interface SetBrigthness {
   brightness: number;
-  index: number;
+  serialNumber: string;
 }
 export interface SetTemperature {
   temperature: number;
-  index: number;
+  serialNumber: string;
 }
 
 export interface CalculateKelvinReturn {
