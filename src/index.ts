@@ -110,7 +110,7 @@ if (isMainThread) {
         console.warn(`Worker stopped with exit code ${code}`);
       });
       worker.on("message", (message: WorkerResponse) => {
-        if (message.refesh) {
+        if (message.refresh) {
           appSettings.lights.forEach((light: LightSettings) => {
             const rgb = colors.hex2rgb(robotjs.getPixelColor(light.x, light.y));
             const luminance = Math.round(
@@ -278,7 +278,7 @@ if (isMainThread) {
   let ambilightActivated = false;
 
   const refresh = () => {
-    ambilightActivated ? parentPort.postMessage({ refesh: true }) : null;
+    ambilightActivated ? parentPort.postMessage({ refresh: true }) : null;
     setTimeout(refresh, 1000 / refreshRate);
   };
 

@@ -17,5 +17,5 @@ export interface WorkerMessage {
 }
 
 export interface WorkerResponse {
-  refesh?: boolean;
+  refresh?: boolean;
 }
