@@ -113,19 +113,22 @@ if (isMainThread) {
         if (message.refresh) {
           appSettings.lights.forEach((light: LightSettings) => {
             const rgb = colors.hex2rgb(robotjs.getPixelColor(light.x, light.y));
-            const luminance = Math.round(
-              (colors.luminance(rgb) / 100) * appSettings.maxBrightness
-            );
             const temp = colors.rgb2temp(rgb);
             const closest = light_helper.closest(temp);
             const index = lights.findIndex(
               (l) => l.info.serialNumber === light.serialNumber
             );
+            const lightness =
+              (colors.rgb2hsl(rgb)[2] / 100) * appSettings.maxBrightness;
+            // lightness in percentage
+
+            console.log(lightness);
+
             light_helper.update({
               lightController: keyLightController,
               index,
               initialOptions: lights[index].options,
-              brightness: luminance,
+              brightness: lightness,
               temperature: closest,
             });
           });
