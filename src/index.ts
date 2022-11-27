@@ -44,6 +44,8 @@ if (isMainThread) {
     const mainWindow = new BrowserWindow({
       height: system.WINDOW_HEIGHT,
       width: system.WINDOW_WIDTH,
+      minHeight: system.WINDOW_HEIGHT * 0.75,
+      minWidth: system.WINDOW_WIDTH,
       webPreferences: {
         /**
          * @see {@link https://github.com/electron/forge/issues/2931}
