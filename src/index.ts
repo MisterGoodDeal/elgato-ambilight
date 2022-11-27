@@ -61,7 +61,7 @@ if (isMainThread) {
     mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
 
     // Open the DevTools.
-    mainWindow.webContents.openDevTools();
+    //mainWindow.webContents.openDevTools();
 
     mainWindow.webContents.once("dom-ready", async () => {
       // Screenshot the desktop
@@ -72,8 +72,8 @@ if (isMainThread) {
       // Get primary screen resolution
       const bounds = screen.getPrimaryDisplay().bounds;
       appSettings.bounds = bounds;
-      mainWindow.webContents.send("set-settings", appSettings);
       store.set("settings", JSON.stringify(appSettings));
+      mainWindow.webContents.send("set-settings", appSettings);
       mainWindow.webContents.send("lights", lights);
 
       // Settings some default values just in case
