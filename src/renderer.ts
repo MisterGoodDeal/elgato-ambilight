@@ -5,7 +5,11 @@ import { Bounds } from "./interfaces/screen";
 import { KeyLight } from "@zunderscore/elgato-light-control";
 import { light as light_helper } from "./helpers/lights.helpers";
 import { system } from "./helpers/system";
-import { AppSettings, LightSettings } from "./interfaces/app";
+import {
+  AppSettings,
+  defaultAppSettings,
+  LightSettings,
+} from "./interfaces/app";
 
 console.log("👋 Hello from renderer!");
 
@@ -18,7 +22,7 @@ const bounds = {
 
 const IMAGE_SIZE = 50;
 
-let appSettings: AppSettings;
+let appSettings: AppSettings = defaultAppSettings;
 
 let keylights: KeyLight[] = [];
 
