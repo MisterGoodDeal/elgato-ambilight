@@ -11,8 +11,6 @@ import {
   LightSettings,
 } from "./interfaces/app";
 
-console.log("👋 Hello from renderer!");
-
 const bounds = {
   width: 0,
   height: 0,
@@ -59,7 +57,6 @@ maxBrightnessInput.addEventListener("change", (event) => {
 
 // @ts-ignore
 window.Bridge.onSettingsReceived((params: AppSettings) => {
-  console.log("onSettingsReceived", params);
   appSettings = params;
   bounds.width = params.bounds.width;
   bounds.height = params.bounds.height;
@@ -147,7 +144,6 @@ const generateCards = (params: KeyLight[]) => {
     cardButton.classList.add("btn", "btn-primary");
     cardButton.innerText = "Identify light";
     cardButton.addEventListener("click", () => {
-      console.log("Identify light at index ", index);
       // @ts-ignore
       window.Bridge.identifyLight(light.info.serialNumber);
     });

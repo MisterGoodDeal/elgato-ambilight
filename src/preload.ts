@@ -5,13 +5,9 @@ import { LightPosition, AppSettings } from "./interfaces/app";
 import { SetBrigthness, SetTemperature } from "./interfaces/lights";
 import { Bounds } from "./interfaces/screen";
 
-// https://www.electronjs.org/docs/latest/tutorial/process-model#preload-scripts
-console.log("😸 Hello from preload!");
-
 const { contextBridge, ipcRenderer } = require("electron");
 
 const sendResolution = (params: { width: number; height: number }) => {
-  console.log("sendResolution from preload", params);
   ipcRenderer.send("send-resolution", params);
 };
 

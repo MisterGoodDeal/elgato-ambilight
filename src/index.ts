@@ -56,8 +56,6 @@ if (isMainThread) {
       },
     });
 
-    console.log(MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY);
-
     // and load the index.html of the app.
     mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
 
@@ -84,7 +82,6 @@ if (isMainThread) {
       // Start the worker for refreshing the ambilight
       worker = new Worker(__filename);
       worker.on("online", () => {
-        console.log("Launching worker...");
         // @ts-ignore
         worker.postMessage({
           refreshRate: appSettings.refreshRate,
@@ -92,10 +89,10 @@ if (isMainThread) {
         });
       });
       worker.on("error", (err: any) => {
-        console.log(err);
+        console.error(err);
       });
       worker.on("exit", (code: any) => {
-        console.log(`Worker stopped with exit code ${code}`);
+        console.warn(`Worker stopped with exit code ${code}`);
       });
       worker.on("message", (message: WorkerResponse) => {
         if (message.refesh) {
@@ -104,7 +101,6 @@ if (isMainThread) {
             const luminance = colors.luminance(rgb);
             const temp = colors.rgb2temp(rgb);
             const closest = light_helper.closest(temp);
-            console.log({ rgb, luminance, temp, closest });
             const index = lights.findIndex(
               (l) => l.info.serialNumber === light.serialNumber
             );
@@ -121,20 +117,16 @@ if (isMainThread) {
     });
 
     keyLightController.on("newKeyLight", (newKeyLight: KeyLight) => {
-      console.log(newKeyLight.options.lights[0].temperature);
       if (
         !lights.find(
           (l) => l.info.serialNumber === newKeyLight.info.serialNumber
         )
       ) {
-        console.log("newKeyLight", newKeyLight.name);
         lights.push(newKeyLight);
         store.set("lights", JSON.stringify(lights));
         mainWindow.webContents.send("lights", lights);
       } else {
         // Update light
-        console.log("updateLight", newKeyLight.name);
-
         const index = lights.findIndex(
           (l) => l.info.serialNumber === newKeyLight.info.serialNumber
         );
@@ -173,7 +165,6 @@ if (isMainThread) {
 
   ipcMain.on("identify-light", async (event, serialNumber) => {
     const index = lights.findIndex((l) => l.info.serialNumber === serialNumber);
-    console.log("identify-light", index);
     const l = lights[index];
     const initialState: number = l.options.lights[0].on ?? 0;
     for (let i = 0; i < 3; i++) {
@@ -264,7 +255,6 @@ if (isMainThread) {
         }
       }
     }
-    console.log("set-light-position", { params, hex });
     store.set("settings", JSON.stringify(appSettings));
   });
 
@@ -292,11 +282,9 @@ if (isMainThread) {
     parentPort.postMessage(rawMessage);
     if (rawMessage.refreshRate !== undefined) {
       refreshRate = rawMessage.refreshRate;
-      console.log("refreshRate", refreshRate);
     }
     if (rawMessage.ambilightActivated !== undefined) {
       ambilightActivated = rawMessage.ambilightActivated;
-      console.log("ambilightActivated", ambilightActivated);
     }
   });
 }
