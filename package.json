@@ -41,6 +41,7 @@
   },
   "dependencies": {
     "@zunderscore/elgato-light-control": "^1.1.2",
+    "color-temp": "^0.0.2",
     "electron-squirrel-startup": "^1.0.0",
     "electron-store": "^8.1.0",
     "electron-typescript-ipc": "^2.0.1",
