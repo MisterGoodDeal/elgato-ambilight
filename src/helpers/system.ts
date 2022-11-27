@@ -11,3 +11,12 @@ export const system = {
   WINDOW_HEIGHT,
   WINDOW_WIDTH,
 };
+
+export interface WorkerMessage {
+  refreshRate?: number;
+  ambilightActivated?: boolean;
+}
+
+export interface WorkerResponse {
+  refesh?: boolean;
+}
