@@ -1,5 +1,3 @@
-// See the Electron documentation for details on how to use preload scripts:
-
 import { KeyLight } from "@zunderscore/elgato-light-control";
 import { LightPosition, AppSettings } from "./interfaces/app";
 import { SetBrigthness, SetTemperature } from "./interfaces/lights";

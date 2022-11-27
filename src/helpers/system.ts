@@ -1,4 +1,3 @@
-// Delay function
 const WINDOW_WIDTH = 1200;
 const WINDOW_HEIGHT = 800;
 

@@ -64,7 +64,6 @@ window.Bridge.onSettingsReceived((params: AppSettings) => {
   bounds.y = params.bounds.y;
   // Calculate aspect ratio of the screen
   const aspectRatio = bounds.height / bounds.width;
-  // Draw rectangle in canvas
   const canvas = document.querySelector("#screen-canvas");
   // @ts-ignore
   canvas.width = system.WINDOW_WIDTH * 0.5;
@@ -100,8 +99,6 @@ const generateCards = (params: KeyLight[]) => {
       serialNumber: light.info.serialNumber,
     });
 
-    // Get the position of #screen-canvas in the dom
-    const canvasRect = canvasContainer.getBoundingClientRect();
     const img = new Image();
     img.src = imageHelper.icon;
     img.onload = () => {
