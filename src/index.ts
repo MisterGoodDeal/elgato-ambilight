@@ -159,10 +159,6 @@ if (isMainThread) {
     }
   });
 
-  ipcMain.on("send-resolution", (event, params) => {
-    console.log("send-resolution", params);
-  });
-
   ipcMain.on("identify-light", async (event, serialNumber) => {
     const index = lights.findIndex((l) => l.info.serialNumber === serialNumber);
     const l = lights[index];

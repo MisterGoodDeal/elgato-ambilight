@@ -7,10 +7,6 @@ import { Bounds } from "./interfaces/screen";
 
 const { contextBridge, ipcRenderer } = require("electron");
 
-const sendResolution = (params: { width: number; height: number }) => {
-  ipcRenderer.send("send-resolution", params);
-};
-
 const onSettingsReceived = (callback: (params: Bounds) => void) => {
   ipcRenderer.on("set-settings", (event, params) => {
     callback(params);
@@ -44,7 +40,6 @@ const setAppSettings = (params: Partial<AppSettings>) => {
 };
 
 const indexBridge = {
-  sendResolution,
   onSettingsReceived,
   onNewKeyLight,
   identifyLight,
