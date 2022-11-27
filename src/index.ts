@@ -108,12 +108,11 @@ if (isMainThread) {
             const index = lights.findIndex(
               (l) => l.info.serialNumber === light.serialNumber
             );
-            // TODO: Add max brightness control
             light_helper.update({
               lightController: keyLightController,
               index,
               initialOptions: lights[index].options,
-              brightness: luminance,
+              brightness: (luminance / 100) * appSettings.maxBrightness,
               temperature: closest,
             });
           });
