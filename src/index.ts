@@ -42,6 +42,7 @@ if (isMainThread) {
   const createWindow = (): void => {
     // Create the browser window.
     const mainWindow = new BrowserWindow({
+      icon: "src/assets/icon/icon.ico",
       height: system.WINDOW_HEIGHT,
       width: system.WINDOW_WIDTH,
       minHeight: system.WINDOW_HEIGHT * 0.75,
@@ -60,7 +61,7 @@ if (isMainThread) {
     mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
 
     // Open the DevTools.
-    // mainWindow.webContents.openDevTools();
+    mainWindow.webContents.openDevTools();
 
     mainWindow.webContents.once("dom-ready", () => {
       // Get primary screen resolution
