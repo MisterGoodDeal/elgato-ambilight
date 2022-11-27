@@ -12,6 +12,8 @@ import {
   LightPosition,
   LightSettings,
 } from "./interfaces/app";
+import { colors } from "./helpers/colors";
+import { light as light_helper } from "./helpers/lights.helpers";
 const { Worker, isMainThread, parentPort } = require("node:worker_threads");
 
 // @ts-ignore
@@ -98,9 +100,22 @@ if (isMainThread) {
       worker.on("message", (message: WorkerResponse) => {
         if (message.refesh) {
           appSettings.lights.forEach((light: LightSettings) => {
-            const color = robotjs.getPixelColor(light.x, light.y);
-
-            console.log({ color });
+            const rgb = colors.hex2rgb(robotjs.getPixelColor(light.x, light.y));
+            const luminance = colors.luminance(rgb);
+            const temp = colors.rgb2temp(rgb);
+            const closest = light_helper.closest(temp);
+            console.log({ rgb, luminance, temp, closest });
+            const index = lights.findIndex(
+              (l) => l.info.serialNumber === light.serialNumber
+            );
+            // TODO: Add max brightness control
+            light_helper.update({
+              lightController: keyLightController,
+              index,
+              initialOptions: lights[index].options,
+              brightness: luminance,
+              temperature: closest,
+            });
           });
         }
       });
