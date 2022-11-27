@@ -19,3 +19,11 @@ export interface WorkerMessage {
 export interface WorkerResponse {
   refesh?: boolean;
 }
+
+export interface OldValues {
+  serialNumber: string;
+  value: {
+    temp: number;
+    luminance: number;
+  };
+}
