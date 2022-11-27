@@ -231,7 +231,7 @@ const generateCards = (params: KeyLight[]) => {
         (lightSetting) => lightSetting.serialNumber === light.info.serialNumber
       );
       appSettings.lights[index].x = parseInt(positionXInput.value);
-      redrawImages(canvasScreen, canvasContainer);
+      redrawImages(canvasScreen);
     });
 
     // Position y control
@@ -257,7 +257,7 @@ const generateCards = (params: KeyLight[]) => {
         (lightSetting) => lightSetting.serialNumber === light.info.serialNumber
       );
       appSettings.lights[index].y = parseInt(positionYInput.value);
-      redrawImages(canvasScreen, canvasContainer);
+      redrawImages(canvasScreen);
     });
 
     const ul = document.createElement("ul");
@@ -290,7 +290,7 @@ const generateCards = (params: KeyLight[]) => {
   });
 };
 
-const redrawImages = (lightsCanvas: Element, mainCanvas: Element) => {
+const redrawImages = (lightsCanvas: Element) => {
   // @ts-ignore
   const ctx = lightsCanvas.getContext("2d");
   // @ts-ignore
@@ -302,7 +302,7 @@ const redrawImages = (lightsCanvas: Element, mainCanvas: Element) => {
       serialNumber: kl.info.serialNumber,
     });
 
-    const canvasRect = mainCanvas.getBoundingClientRect();
+    const canvasRect = lightsCanvas.getBoundingClientRect();
     const img = new Image();
     img.src = imageHelper.icon;
     img.onload = () => {
