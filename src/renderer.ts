@@ -72,7 +72,7 @@ window.Bridge.onSettingsReceived((params: AppSettings) => {
 
   if (appSettings.screenshot && appSettings.screenshot !== "failed") {
     const img = new Image();
-    img.src = `data:image/png;base64,${appSettings.screenshot}`;
+    img.src = `${appSettings.screenshot}`;
     img.onload = () => {
       // @ts-ignore
       ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
@@ -303,7 +303,7 @@ const redrawImages = (lightsCanvas: Element) => {
   ctx.clearRect(0, 0, lightsCanvas.width, lightsCanvas.height);
   if (appSettings.screenshot && appSettings.screenshot !== "failed") {
     const img = new Image();
-    img.src = `data:image/png;base64,${appSettings.screenshot}`;
+    img.src = `${appSettings.screenshot}`;
     img.onload = () => {
       // @ts-ignore
       ctx.drawImage(img, 0, 0, lightsCanvas.width, lightsCanvas.height);
