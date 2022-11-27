@@ -7,6 +7,42 @@
   <body>
     <h1>💡Elgato Ambilight</h1>
     <div class="container text-center">
+      <div class="row">
+        <div class="col-6">
+          <b
+            ><label for="refreshRate" class="form-label"
+              >Refresh rate (<span id="refreshRateText">15</span> FPS)</label
+            ></b
+          >
+          <input
+            type="range"
+            id="refreshRate"
+            name="refreshRate"
+            min="5"
+            max="30"
+            value="15"
+            class="form-range"
+          />
+        </div>
+        <div
+          class="col-6"
+          style="display: flex; justify-content: center; align-items: center"
+        >
+          <input
+            class="form-check-input"
+            type="checkbox"
+            value=""
+            name="ambilightActivated"
+            id="ambilightActivated"
+            style="width: 1.25rem; height: 1.25rem; margin-right: 10px"
+          />
+          <label class="form-check-label" for="ambilightActivated">
+            Ambilight is <b id="ambilightText">OFF</b>
+          </label>
+        </div>
+      </div>
+    </div>
+    <div class="container text-center">
       <div class="row" id="lights">
         <p style="text-align: center">No lights found</p>
       </div>

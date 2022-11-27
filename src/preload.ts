@@ -1,7 +1,7 @@
 // See the Electron documentation for details on how to use preload scripts:
 
 import { KeyLight } from "@zunderscore/elgato-light-control";
-import { LightPosition } from "./interfaces/app";
+import { LightPosition, AppSettings } from "./interfaces/app";
 import { SetBrigthness, SetTemperature } from "./interfaces/lights";
 import { Bounds } from "./interfaces/screen";
 
@@ -43,6 +43,10 @@ const setLightPosition = (params: LightPosition) => {
   ipcRenderer.send("set-light-position", params);
 };
 
+const setAppSettings = (params: Partial<AppSettings>) => {
+  ipcRenderer.send("set-app-settings", params);
+};
+
 const indexBridge = {
   sendResolution,
   onSettingsReceived,
@@ -51,6 +55,7 @@ const indexBridge = {
   setLightBrightness,
   setLightTemperature,
   setLightPosition,
+  setAppSettings,
 };
 
 contextBridge.exposeInMainWorld("Bridge", indexBridge);

@@ -22,15 +22,25 @@ let appSettings: AppSettings;
 
 let keylights: KeyLight[] = [];
 
-const btnSend = document.querySelector("#send-btn");
-btnSend.addEventListener("click", () => {
+const checkbox = document.querySelector("#ambilightActivated");
+const ambilightText = document.querySelector("#ambilightText");
+const refreshRate = document.querySelector("#refreshRate");
+const refreshRateText = document.querySelector("#refreshRateText");
+
+checkbox.addEventListener("change", (event) => {
+  const target = event.target as HTMLInputElement;
+  ambilightText.innerHTML = target.checked ? "ON" : "OFF";
+  appSettings.ambilightOn = target.checked;
   // @ts-ignore
-  const width = document.querySelector("#screen-width").value;
+  window.Bridge.setAppSettings({ ambilightOn: target.checked });
+});
+
+refreshRate.addEventListener("change", (event) => {
+  const target = event.target as HTMLInputElement;
+  refreshRateText.innerHTML = target.value;
+  appSettings.refreshRate = parseInt(target.value);
   // @ts-ignore
-  const height = document.querySelector("#screen-height").value;
-  console.log("btnSend click", { width, height });
-  // @ts-ignore
-  window.Bridge.sendResolution({ width, height });
+  window.Bridge.setAppSettings({ refreshRate: parseInt(target.value) });
 });
 
 // @ts-ignore
@@ -53,6 +63,12 @@ window.Bridge.onSettingsReceived((params: AppSettings) => {
   const ctx = canvas.getContext("2d");
   // @ts-ignore
   ctx.clearRect(0, 0, canvas.width, canvas.height);
+  // @ts-ignore
+  checkbox.checked = params.ambilightOn;
+  ambilightText.innerHTML = params.ambilightOn ? "ON" : "OFF";
+  // @ts-ignore
+  refreshRate.value = params.refreshRate;
+  refreshRateText.innerHTML = params.refreshRate.toString();
 });
 
 // @ts-ignore
