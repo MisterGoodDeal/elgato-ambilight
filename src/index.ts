@@ -4,12 +4,7 @@ import {
   KeyLight,
 } from "@zunderscore/elgato-light-control";
 import { light } from "./helpers/lights.helpers";
-import {
-  OldValues,
-  system,
-  WorkerMessage,
-  WorkerResponse,
-} from "./helpers/system";
+import { system, WorkerMessage, WorkerResponse } from "./helpers/system";
 import { SetBrigthness, SetTemperature } from "./interfaces/lights";
 import {
   AppSettings,
@@ -69,7 +64,6 @@ if (isMainThread) {
     //mainWindow.webContents.openDevTools();
 
     mainWindow.webContents.once("dom-ready", async () => {
-      let oldValues: OldValues[] = [];
       const bounds = screen.getPrimaryDisplay().bounds;
       appSettings.bounds = bounds;
 
@@ -127,43 +121,13 @@ if (isMainThread) {
             const index = lights.findIndex(
               (l) => l.info.serialNumber === light.serialNumber
             );
-
-            // Find the index w/ serialNumber in the array oldValues
-            const oldIndex = oldValues.findIndex(
-              (l) => l.serialNumber === light.serialNumber
-            );
-
-            if (oldIndex !== -1) {
-              if (
-                oldValues[oldIndex].value.temp !== closest ||
-                oldValues[oldIndex].value.luminance !== luminance
-              ) {
-                light_helper.update({
-                  lightController: keyLightController,
-                  index,
-                  initialOptions: lights[index].options,
-                  brightness: luminance,
-                  temperature: closest,
-                });
-                oldValues[oldIndex].value.temp = closest;
-                oldValues[oldIndex].value.luminance = luminance;
-              }
-            } else {
-              oldValues.push({
-                serialNumber: light.serialNumber,
-                value: {
-                  temp: temp,
-                  luminance: luminance,
-                },
-              });
-              light_helper.update({
-                lightController: keyLightController,
-                index,
-                initialOptions: lights[index].options,
-                brightness: luminance,
-                temperature: closest,
-              });
-            }
+            light_helper.update({
+              lightController: keyLightController,
+              index,
+              initialOptions: lights[index].options,
+              brightness: luminance,
+              temperature: closest,
+            });
           });
         }
       });
