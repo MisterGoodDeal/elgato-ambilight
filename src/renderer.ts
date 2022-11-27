@@ -61,9 +61,9 @@ window.Bridge.onSettingsReceived((params: AppSettings) => {
   const aspectRatio = bounds.height / bounds.width;
   const canvas = document.querySelector("#screen-canvas");
   // @ts-ignore
-  canvas.width = system.WINDOW_WIDTH * 0.5;
+  canvas.width = system.WINDOW_WIDTH * 0.75;
   // @ts-ignore
-  canvas.height = system.WINDOW_WIDTH * 0.5 * aspectRatio;
+  canvas.height = system.WINDOW_WIDTH * 0.75 * aspectRatio;
   // @ts-ignore
   const ctx = canvas.getContext("2d");
   // @ts-ignore
