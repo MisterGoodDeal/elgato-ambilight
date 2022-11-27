@@ -1,5 +1,5 @@
-const WINDOW_WIDTH = 800;
-const WINDOW_HEIGHT = 600;
+const WINDOW_WIDTH = 1200;
+const WINDOW_HEIGHT = 800;
 
 const delay = (ms: number) => {
   return new Promise((resolve) => setTimeout(resolve, ms));
