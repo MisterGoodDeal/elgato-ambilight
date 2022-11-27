@@ -123,9 +123,7 @@ const changeLightState = (params: ChangeState) => {
         },
       ],
     })
-    .then(() => {
-      console.log("Key Light state has been updated!");
-    })
+    .then(() => {})
     .catch((e) => {
       console.error("Error: ", e);
     });
@@ -150,9 +148,7 @@ const changeLightTemperature = (params: ChangeTemperature) => {
         },
       ],
     })
-    .then(() => {
-      console.log("Key Light T° has been updated!");
-    })
+    .then(() => {})
     .catch((e) => {
       console.error("Error: ", e);
     });
@@ -177,9 +173,7 @@ const changeLightBrightness = (params: ChangeBrightness) => {
         },
       ],
     })
-    .then(() => {
-      console.log("Key Light brightness has been updated!");
-    })
+    .then(() => {})
     .catch((e) => {
       console.error("Error: ", e);
     });
@@ -204,9 +198,7 @@ const updateTempAndBrightness = (params: UpdateTempAndBrightness) => {
         },
       ],
     })
-    .then(() => {
-      console.log("Key Light state has been updated w/ ambilight settings!");
-    })
+    .then(() => {})
     .catch((e) => {
       console.error("Error: ", e);
     });
