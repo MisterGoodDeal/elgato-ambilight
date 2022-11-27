@@ -2,6 +2,7 @@ export interface AppSettings {
   lights: LightSettings[];
   ambilightOn: boolean;
   refreshRate: number;
+  maxBrightness: number;
   bounds: Electron.Rectangle;
 }
 
@@ -15,6 +16,7 @@ export const defaultAppSettings = {
   // @ts-ignore
   lights: [],
   ambilightOn: false,
+  maxBrightness: 100,
   bounds: {
     x: 0,
     y: 0,

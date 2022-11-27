@@ -26,6 +26,8 @@ const checkbox = document.querySelector("#ambilightActivated");
 const ambilightText = document.querySelector("#ambilightText");
 const refreshRate = document.querySelector("#refreshRate");
 const refreshRateText = document.querySelector("#refreshRateText");
+const maxBrightnessInput = document.querySelector("#maxBrightness");
+const maxBrightnessText = document.querySelector("#maxBrightnessText");
 
 checkbox.addEventListener("change", (event) => {
   const target = event.target as HTMLInputElement;
@@ -41,6 +43,14 @@ refreshRate.addEventListener("change", (event) => {
   appSettings.refreshRate = parseInt(target.value);
   // @ts-ignore
   window.Bridge.setAppSettings({ refreshRate: parseInt(target.value) });
+});
+
+maxBrightnessInput.addEventListener("change", (event) => {
+  const target = event.target as HTMLInputElement;
+  maxBrightnessText.innerHTML = target.value;
+  appSettings.maxBrightness = parseInt(target.value);
+  // @ts-ignore
+  window.Bridge.setAppSettings({ maxBrightness: parseInt(target.value) });
 });
 
 // @ts-ignore
