@@ -4,6 +4,7 @@ export interface AppSettings {
   refreshRate: number;
   maxBrightness: number;
   bounds: Electron.Rectangle;
+  screenshot?: string;
 }
 
 export interface LightSettings {

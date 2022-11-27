@@ -1,15 +1,10 @@
 import "./index.css";
 import "./bootstrap/bootstrap.min.css";
 import "./bootstrap/bootstrap.bundle.min.js";
-import { Bounds } from "./interfaces/screen";
 import { KeyLight } from "@zunderscore/elgato-light-control";
 import { light as light_helper } from "./helpers/lights.helpers";
 import { system } from "./helpers/system";
-import {
-  AppSettings,
-  defaultAppSettings,
-  LightSettings,
-} from "./interfaces/app";
+import { AppSettings, defaultAppSettings } from "./interfaces/app";
 
 const bounds = {
   width: 0,
@@ -73,6 +68,17 @@ window.Bridge.onSettingsReceived((params: AppSettings) => {
   const ctx = canvas.getContext("2d");
   // @ts-ignore
   ctx.clearRect(0, 0, canvas.width, canvas.height);
+  //console.log("App screenqhot", params.screenshot);
+
+  if (appSettings.screenshot && appSettings.screenshot !== "failed") {
+    const img = new Image();
+    img.src = `data:image/png;base64,${appSettings.screenshot}`;
+    img.onload = () => {
+      // @ts-ignore
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+    };
+  }
+
   // @ts-ignore
   checkbox.checked = params.ambilightOn;
   ambilightText.innerHTML = params.ambilightOn ? "ON" : "OFF";
@@ -295,6 +301,14 @@ const redrawImages = (lightsCanvas: Element) => {
   const ctx = lightsCanvas.getContext("2d");
   // @ts-ignore
   ctx.clearRect(0, 0, lightsCanvas.width, lightsCanvas.height);
+  if (appSettings.screenshot && appSettings.screenshot !== "failed") {
+    const img = new Image();
+    img.src = `data:image/png;base64,${appSettings.screenshot}`;
+    img.onload = () => {
+      // @ts-ignore
+      ctx.drawImage(img, 0, 0, lightsCanvas.width, lightsCanvas.height);
+    };
+  }
   keylights.forEach((kl) => {
     const imageHelper = light_helper.image(kl.info.productName);
     const lightSettings = light_helper.settings({

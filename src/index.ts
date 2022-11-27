@@ -63,12 +63,30 @@ if (isMainThread) {
     // Open the DevTools.
     mainWindow.webContents.openDevTools();
 
-    mainWindow.webContents.once("dom-ready", () => {
+    mainWindow.webContents.once("dom-ready", async () => {
+      // Screenshot the desktop
+      const sd = require("screenshot-desktop");
+
+      const screenshot = new Buffer(await sd()).toString("base64");
+      appSettings.screenshot = screenshot;
+      // Write in screenshot.json file
+      const fs = require("fs");
+      fs.writeFile(
+        "src/assets/screenshot.json",
+        JSON.stringify({ screenshot }),
+        function (err: any) {
+          if (err) {
+            appSettings.screenshot = "failed";
+            return console.error(err);
+          } else {
+          }
+        }
+      );
       // Get primary screen resolution
       const bounds = screen.getPrimaryDisplay().bounds;
       appSettings.bounds = bounds;
-      store.set("settings", JSON.stringify(appSettings));
       mainWindow.webContents.send("set-settings", appSettings);
+      store.set("settings", JSON.stringify(appSettings));
       mainWindow.webContents.send("lights", lights);
 
       // Settings some default values just in case
