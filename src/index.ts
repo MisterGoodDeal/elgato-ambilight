@@ -64,14 +64,23 @@ if (isMainThread) {
     //mainWindow.webContents.openDevTools();
 
     mainWindow.webContents.once("dom-ready", async () => {
-      // Screenshot the desktop
-      desktopCapturer.getSources({ types: ["screen"] }).then((sources) => {
-        appSettings.screenshot = sources[0].thumbnail.toDataURL();
-      });
-
-      // Get primary screen resolution
       const bounds = screen.getPrimaryDisplay().bounds;
       appSettings.bounds = bounds;
+
+      // Screenshot the desktop
+      desktopCapturer
+        .getSources({
+          types: ["screen"],
+          thumbnailSize: {
+            width: bounds.width * 0.5,
+            height: bounds.height * 0.5,
+          },
+        })
+        .then((sources) => {
+          appSettings.screenshot = sources[0].thumbnail.toDataURL();
+        });
+
+      // Get primary screen resolution
       store.set("settings", JSON.stringify(appSettings));
       mainWindow.webContents.send("set-settings", appSettings);
       mainWindow.webContents.send("lights", lights);
