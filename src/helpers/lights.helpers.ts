@@ -84,6 +84,15 @@ const TEMPERATURE_VALUES = [
   { value: 344, temp: 2900 },
 ];
 
+const getClosestTemperatureValue = (value: number) => {
+  const closest = TEMPERATURE_VALUES.reduce((prev, curr) => {
+    return Math.abs(curr.temp - value) < Math.abs(prev.temp - value)
+      ? curr
+      : prev;
+  });
+  return closest.value;
+};
+
 const getImagePathFromName = (name: string) => {
   switch (name) {
     case "Elgato Key Light Air":
@@ -176,6 +185,33 @@ const changeLightBrightness = (params: ChangeBrightness) => {
     });
 };
 
+interface UpdateTempAndBrightness {
+  lightController: ElgatoKeyLightController;
+  index: number;
+  initialOptions: KeyLightOptions;
+  brightness: number;
+  temperature: number;
+}
+const updateTempAndBrightness = (params: UpdateTempAndBrightness) => {
+  params.lightController
+    .updateLightOptions(params.lightController.keyLights[params.index], {
+      numberOfLights: params.initialOptions.numberOfLights,
+      lights: [
+        {
+          on: 1,
+          brightness: params.brightness,
+          temperature: params.temperature,
+        },
+      ],
+    })
+    .then(() => {
+      console.log("Key Light state has been updated w/ ambilight settings!");
+    })
+    .catch((e) => {
+      console.error("Error: ", e);
+    });
+};
+
 const calculateTemperatureFromValueToKelvin = (value: number) => {
   return {
     text: `${TEMPERATURE_VALUES[value]?.temp ?? 0}K`,
@@ -262,6 +298,8 @@ export const light = {
   brightness: changeLightBrightness,
   temperatureValueIndex: getTemperatureValueIndex,
   settings: returnLightSettings,
+  update: updateTempAndBrightness,
+  closest: getClosestTemperatureValue,
   MAX_TEMPERATURE,
   MIN_TEMPERATURE,
   TEMPERATURE_VALUES,
