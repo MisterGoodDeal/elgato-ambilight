@@ -1,8 +1,8 @@
 {
-  "name": "electron-typescript-ipc-example",
-  "productName": "electron-typescript-ipc-example",
+  "name": "elgato-ambilight",
+  "productName": "Elgato Ambilight",
   "version": "1.0.0",
-  "description": "My Electron application description",
+  "description": "Elgato ambilight for KeyLight & KeyLight Air",
   "main": ".webpack/main",
   "scripts": {
     "start": "electron-forge start",
@@ -13,8 +13,8 @@
   },
   "keywords": [],
   "author": {
-    "name": "JichouP",
-    "email": "akkunn100@gmail.com"
+    "name": "Turtlecorp",
+    "email": "mcamus@turtlecorp.fr"
   },
   "license": "MIT",
   "devDependencies": {
