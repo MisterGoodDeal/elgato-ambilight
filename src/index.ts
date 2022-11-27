@@ -1,4 +1,4 @@
-import { app, BrowserWindow, ipcMain, screen } from "electron";
+import { app, BrowserWindow, ipcMain, screen, desktopCapturer } from "electron";
 import {
   ElgatoKeyLightController,
   KeyLight,
@@ -65,23 +65,10 @@ if (isMainThread) {
 
     mainWindow.webContents.once("dom-ready", async () => {
       // Screenshot the desktop
-      const sd = require("screenshot-desktop");
+      desktopCapturer.getSources({ types: ["screen"] }).then((sources) => {
+        appSettings.screenshot = sources[0].thumbnail.toDataURL();
+      });
 
-      const screenshot = new Buffer(await sd()).toString("base64");
-      appSettings.screenshot = screenshot;
-      // Write in screenshot.json file
-      const fs = require("fs");
-      fs.writeFile(
-        "src/assets/screenshot.json",
-        JSON.stringify({ screenshot }),
-        function (err: any) {
-          if (err) {
-            appSettings.screenshot = "failed";
-            return console.error(err);
-          } else {
-          }
-        }
-      );
       // Get primary screen resolution
       const bounds = screen.getPrimaryDisplay().bounds;
       appSettings.bounds = bounds;

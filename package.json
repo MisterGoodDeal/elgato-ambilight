@@ -46,7 +46,6 @@
     "electron-store": "^8.1.0",
     "electron-typescript-ipc": "^2.0.1",
     "fs": "^0.0.1-security",
-    "robotjs": "^0.6.0",
-    "screenshot-desktop": "^1.12.7"
+    "robotjs": "^0.6.0"
   }
 }
