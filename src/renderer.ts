@@ -79,6 +79,9 @@ window.Bridge.onSettingsReceived((params: AppSettings) => {
   // @ts-ignore
   refreshRate.value = params.refreshRate;
   refreshRateText.innerHTML = params.refreshRate.toString();
+  // @ts-ignore
+  maxBrightnessInput.value = params.maxBrightness;
+  maxBrightnessText.innerHTML = params.maxBrightness.toString();
 });
 
 // @ts-ignore

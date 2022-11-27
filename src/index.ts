@@ -35,7 +35,7 @@ if (isMainThread) {
   }
 
   const lights: KeyLight[] = JSON.parse(store.get("lights") || "[]");
-  const appSettings: AppSettings = JSON.parse(
+  let appSettings: AppSettings = JSON.parse(
     store.get("settings") || JSON.stringify(defaultAppSettings)
   );
 
@@ -46,6 +46,7 @@ if (isMainThread) {
       width: system.WINDOW_WIDTH,
       minHeight: system.WINDOW_HEIGHT * 0.75,
       minWidth: system.WINDOW_WIDTH,
+      autoHideMenuBar: true,
       webPreferences: {
         /**
          * @see {@link https://github.com/electron/forge/issues/2931}
@@ -97,7 +98,9 @@ if (isMainThread) {
         if (message.refesh) {
           appSettings.lights.forEach((light: LightSettings) => {
             const rgb = colors.hex2rgb(robotjs.getPixelColor(light.x, light.y));
-            const luminance = colors.luminance(rgb);
+            const luminance = Math.round(
+              (colors.luminance(rgb) / 100) * appSettings.maxBrightness
+            );
             const temp = colors.rgb2temp(rgb);
             const closest = light_helper.closest(temp);
             const index = lights.findIndex(
@@ -107,7 +110,7 @@ if (isMainThread) {
               lightController: keyLightController,
               index,
               initialOptions: lights[index].options,
-              brightness: (luminance / 100) * appSettings.maxBrightness,
+              brightness: luminance,
               temperature: closest,
             });
           });
@@ -248,6 +251,7 @@ if (isMainThread) {
   ipcMain.on("set-app-settings", (event, params: Partial<AppSettings>) => {
     const tempAppSettings = { ...appSettings, ...params };
     store.set("settings", JSON.stringify(tempAppSettings));
+    appSettings = tempAppSettings;
     // @ts-ignore
     worker.postMessage({
       refreshRate: params.refreshRate,
