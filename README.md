@@ -29,7 +29,7 @@ As you can you can change the refresh rate of the ambilight. This settings will 
 
 For the moment there's no current Windows installer because it breaks the app and I can't figure out why. Instead you can use the portable version of the app. 
 
-1. Go to the release page and download the latest version of `Elgato Ambilight-win32-x64.zip`.
+1. Go to the [release page](https://github.com/MisterGoodDeal/elgato-ambilight/releases) and download the latest version of `Elgato Ambilight-win32-x64.zip`.
 2. Unzip the archive we're you want to store the app
 3. Run the `Elgato Ambilight.exe` in order to start the app.
 
@@ -37,7 +37,7 @@ For the moment there's no current Windows installer because it breaks the app an
 
 ## 💻 Install on MacOS
  
-1. Go to the release page and download the latest version of `Elgato_Ambilight-darwin-x64-x.x.x.zip`.
+1. Go to the [release page](https://github.com/MisterGoodDeal/elgato-ambilight/releases) and download the latest version of `Elgato_Ambilight-darwin-x64-x.x.x.zip`.
 2. Drag and drop the `Elgato Ambilight.app` in your `Application` directory
 3. Run  `Elgato Ambilight.app` in order to start the app.
 
