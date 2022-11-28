@@ -14,7 +14,7 @@ This app allow you to use your **Elgato KeyLight** and **Elgato KeyLight** Air a
 
 In order to work properly, you need to have the `Bonjour!` service installed on your computer. This service allow the discovery and the control of the light over the network. 
 
-As you can you can change the refresh rate of the ambilight. This settings will denpends on your network and light capability at sending/receiving network requests. I've tested many different refresh rates and here's my conclusion:
+As you can see you can change the refresh rate of the ambilight. This settings will denpends on your network and light capability at sending/receiving network requests. I've tested many different refresh rates and here's my conclusion:
 
 ### Setup
 - Tested with a computer connected to 1Gb ethernet router
