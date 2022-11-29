@@ -18,6 +18,7 @@ As you can see you can change the refresh rate of the ambilight. This settings w
 
 ### Setup
 - Tested with a computer connected to 1Gb ethernet router
+- Tested on a MacBook Pro 2019 (Intel chip)
 - Lights are connected to the WiFi 6 router (I'm not sure it makes any differences since the lights aren't WiFi 6 ready?)
 
 ### Recommended settings
